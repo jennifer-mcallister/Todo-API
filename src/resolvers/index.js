@@ -10,15 +10,11 @@ exports.resolvers = {
         getTodoById: async (_, args, context) => {
             const id = args.id
             const filePath = path.join(todosDirectory, `${id}.json`)
-
             const todoExists = await fileExists(filePath)
-
             if (!todoExists) return GraphQLError('Todo has aldready left')
-            
             const todoData = JSON.parse(await readFile(filePath))
 
             return todoData
-
         },
         getAllTodos: async (_, args, context) => {
             
