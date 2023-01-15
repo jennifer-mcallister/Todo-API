@@ -1,6 +1,6 @@
 const path = require('path')
 const fsPromises = require('fs/promises')
-const { fileExists, getDirectoryFileNames, readFile } = require('../utils/fileHandling')
+const { fileExists, getDirectoryFileNames, readFile} = require('../utils/fileHandling')
 const { GraphQLError } = require('graphql')
 const crypto = require('crypto')
 
@@ -33,10 +33,8 @@ exports.resolvers = {
     Mutation: {
         createTodo: async (_, args, context) => {
             if (args.task.length === 0) return new GraphQLError('Oppsie task must be at least i character long')
-
             const newTodo = { id: crypto.randomUUID(), task: args.task, description: args.description || ``, done: false} 
             const filePath = path.join(todosDirectory, `${newTodo.id}.json`)
-
             let idExists = true
             while (idExists) {
                 const exists = await fileExists(filePath)
@@ -46,13 +44,21 @@ exports.resolvers = {
                 }
             idExists = false
             }
-
             await fsPromises.writeFile(filePath, JSON.stringify(newTodo))
 
             return newTodo
-
         },
         updateTodo: async (_, args, context) => {
+            const { id, task, description, done } = args
+            const filePath = path.join(todosDirectory, `${id}.json`)
+            console.log(filePath)
+            const Exists = await fileExists(filePath)
+            if (!Exists) return new GraphQLError('Oppsie that todo does not exist')
+
+            const updatedTodo = {id, task, description, done}
+            await fsPromises.writeFile(filePath, JSON.stringify(updatedTodo))
+
+            return updatedTodo
 
         },
         deleteTodo: async (_, args, context) => {
