@@ -1,6 +1,7 @@
 type Todo {
 	id: ID
 	task: String
+	description: String
 	done: Boolean
 }
 
@@ -15,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-	createTodo(todo: String!, done: Boolean): Todo
-	updateTodo(id: ID!, todo: String!, done: Boolean!): Todo
+	createTodo(task: String!, description: String): Todo
+	updateTodo(id: ID!, task: String!, done: Boolean!): Todo
 	deleteTodo: DeletedResourceResponse
 }
