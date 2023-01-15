@@ -1,0 +1,21 @@
+type Todo {
+	id: ID
+	task: String
+	done: Boolean
+}
+
+type DeletedResourceResponse {
+	deletedId: ID
+	success: Boolean
+}
+
+type Query {
+	getTodoById(id: ID!): Todo
+	getAllTodos: [Todo]
+}
+
+type Mutation {
+	createTodo(todo: String!, done: Boolean): Todo
+	updateTodo(id: ID!, todo: String!, done: Boolean!): Todo
+	deleteTodo: DeletedResourceResponse
+}
