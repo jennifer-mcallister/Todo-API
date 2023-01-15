@@ -1,6 +1,6 @@
 const path = require('path')
 const fsPromises = require('fs/promises')
-const { fileExists, getDirectoryFileNames, readFile} = require('../utils/fileHandling')
+const { fileExists, getDirectoryFileNames, readFile, deleteFile} = require('../utils/fileHandling')
 const { GraphQLError } = require('graphql')
 const crypto = require('crypto')
 
@@ -51,18 +51,30 @@ exports.resolvers = {
         updateTodo: async (_, args, context) => {
             const { id, task, description, done } = args
             const filePath = path.join(todosDirectory, `${id}.json`)
-            console.log(filePath)
             const Exists = await fileExists(filePath)
             if (!Exists) return new GraphQLError('Oppsie that todo does not exist')
-
             const updatedTodo = {id, task, description, done}
             await fsPromises.writeFile(filePath, JSON.stringify(updatedTodo))
 
             return updatedTodo
-
         },
         deleteTodo: async (_, args, context) => {
-
+            const id = args.id
+            const filePath = path.join(todosDirectory, `${id}.json`)
+            const Exists = await fileExists(filePath)
+            if(!Exists) return new GraphQLError('Oppsie that todo does not exist')
+            try {
+                await deleteFile(filePath)
+            } catch (error) {
+                return {
+                    deletedTodo: id,
+                    success: false
+                }
+            }
+            return {
+                deletedTodo: id,
+                success: true
+            }
         },
 
     }
