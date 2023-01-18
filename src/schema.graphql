@@ -5,6 +5,36 @@ type Todo {
 	done: Boolean
 }
 
+type Ticket {
+	id: ID
+	title: String
+	description: String
+	type: TicketType
+	priority: TicketPriority
+	status: TicketStatus
+}
+
+enum TicketType {
+	BUG
+	NEW_FEATURE
+	OTHER
+}
+
+enum TicketPriority {
+	CRITICAL
+	HIGH
+	MEDIUM
+	LOW
+}
+
+enum TicketStatus {
+	NEW
+	IN_DEVELOPMENT
+	IN_REVIEW
+	READY_FOR_TEST
+	COMPLETED
+}
+
 type DeletedResourceResponse {
 	deletedTodo: ID
 	success: Boolean
@@ -19,4 +49,15 @@ type Mutation {
 	createTodo(task: String!, description: String): Todo
 	updateTodo(id: ID!, task: String!, description: String!, done: Boolean!): Todo
 	deleteTodo(id: ID!): DeletedResourceResponse
+
+	createTicket(input: CreateTicketInput!): Ticket
+}
+
+input CreateTicketInput {
+	title: String!
+	description: String
+	type: TicketType!
+	priority: TicketPriority
+	status: TicketStatus
+	todoId: ID!
 }
